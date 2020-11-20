@@ -1,0 +1,24 @@
+<aura:component implements="lightning:availableForFlowScreens" controller="OpportunityController" access="global">
+    <aura:attribute name="pricebooks" type="Pricebook2[]" default=""/>
+    <aura:attribute name="relatedEntries" type="PricebookEntry[]" default="[]"/>
+    <aura:attribute name="selectedBookId" type="String" default="" access="global"/>
+    <aura:attribute name="selectedEntryId" type="String" default="" access="global"/>
+  
+    <aura:handler  name="init" value="{!this}" action="{!c.init}"/>
+  
+    <lightning:select label="Select pricebook" 
+                      required="true" 
+                      value="{!v.selectedBookId}"
+                      onchange="{! c.pricebookChange}">
+      <aura:iteration items="{!v.pricebooks}" var="Book">
+        <option value="{!Book.Id}">{!Book.Name}</option>
+      </aura:iteration>
+    </lightning:select>
+    <lightning:select label="Select entry" 
+                      required="true" 
+                      value="{!v.selectedEntryId}">
+      <aura:iteration items="{!v.relatedEntries}" var="entry">
+        <option value="{!entry.Id}">{!entry.Name}</option>
+      </aura:iteration>
+    </lightning:select>
+</aura:component>

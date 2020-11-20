@@ -23,13 +23,13 @@
     </actionCalls>
     <apiVersion>50.0</apiVersion>
     <assignments>
-        <name>Account_Id_Assignment</name>
-        <label>Account Id Assignment</label>
-        <locationX>555</locationX>
-        <locationY>530</locationY>
+        <name>AccounIdAssignment</name>
+        <label>AccounIdAssignment</label>
+        <locationX>287</locationX>
+        <locationY>217</locationY>
         <assignmentItems>
-            <assignToReference>AccountId</assignToReference>
-            <operator>Add</operator>
+            <assignToReference>accountId</assignToReference>
+            <operator>Assign</operator>
             <value>
                 <elementReference>recordId</elementReference>
             </value>
@@ -38,13 +38,158 @@
             <targetReference>Opportunity_Creation</targetReference>
         </connector>
     </assignments>
+    <assignments>
+        <name>AccountIdAssignment</name>
+        <label>AccountIdAssignment</label>
+        <locationX>450</locationX>
+        <locationY>387</locationY>
+        <assignmentItems>
+            <assignToReference>accountId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>selecteadAccount.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Opportunity_Creation</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Contact_Role_Assignment</name>
+        <label>Contact Role Assignment</label>
+        <locationX>1124</locationX>
+        <locationY>525</locationY>
+        <assignmentItems>
+            <assignToReference>contactRole.OpportunityId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>opportunityId</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>contactRole.ContactId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Contact_Role_Creation_Loop.ContactId</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>contactRole.Role</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Contact_Role_Creation_Loop.Role</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Create_Contact_Roles</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Opportunity_Fields_Assignment</name>
+        <label>Opportunity Fields Assignment</label>
+        <locationX>615</locationX>
+        <locationY>64</locationY>
+        <assignmentItems>
+            <assignToReference>newOpportunity.Name</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Opportunity_Name</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newOpportunity.StageName</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Opportunity_Stage</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newOpportunity.CloseDate</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Closed_Date</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Contact_Role_Creation</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Opportunity_Product_Assignment</name>
+        <label>Opportunity Product Assignment</label>
+        <locationX>1376</locationX>
+        <locationY>169</locationY>
+        <assignmentItems>
+            <assignToReference>opportunityLineItem.Name</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Opportunity_Id_Assignment.Name</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>opportunityLineItem.Quantity</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Opportunity_Id_Assignment.Quantity</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>opportunityLineItem.OpportunityId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>opportunityId</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>opportunityLineItem.UnitPrice</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Opportunity_Id_Assignment.UnitPrice</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>opportunityLineItem.PricebookEntryId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>selectedEntryId</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Create_Products</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>IsCreatingNewAccount</name>
+        <label>IsCreatingNewAccount</label>
+        <locationX>342</locationX>
+        <locationY>520</locationY>
+        <defaultConnector>
+            <targetReference>AccountIdAssignment</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>CreateNewAccount</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>isNewAccount</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Account_Creation</targetReference>
+            </connector>
+            <label>CreateNewAccount</label>
+        </rules>
+    </decisions>
     <decisions>
         <name>IsOnAccountRecord</name>
         <label>IsOnAccountRecord</label>
         <locationX>168</locationX>
         <locationY>382</locationY>
         <defaultConnector>
-            <targetReference>Account_Creation</targetReference>
+            <targetReference>Search_Account</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -58,7 +203,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Account_Id_Assignment</targetReference>
+                <targetReference>AccounIdAssignment</targetReference>
             </connector>
             <label>AccountRecord</label>
         </rules>
@@ -73,6 +218,31 @@
     </dynamicChoiceSets>
     <interviewLabel>Opportunity Products Creation {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Opportunity Products Creation</label>
+    <loops>
+        <name>Contact_Role_Creation_Loop</name>
+        <label>Contact Role Creation Loop</label>
+        <locationX>1123</locationX>
+        <locationY>386</locationY>
+        <collectionReference>contactRoles</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Contact_Role_Assignment</targetReference>
+        </nextValueConnector>
+    </loops>
+    <loops>
+        <name>Opportunity_Id_Assignment</name>
+        <label>Opportunity Id Assignment</label>
+        <locationX>1124</locationX>
+        <locationY>173</locationY>
+        <collectionReference>Products</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Opportunity_Product_Assignment</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Contact_Role_Creation_Loop</targetReference>
+        </noMoreValuesConnector>
+    </loops>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -93,11 +263,21 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <recordCreates>
-        <name>Create_Account</name>
-        <label>Create Account</label>
-        <locationX>536</locationX>
-        <locationY>380</locationY>
-        <assignRecordIdToReference>AccountId</assignRecordIdToReference>
+        <name>Create_Contact_Roles</name>
+        <label>Create Contact Roles</label>
+        <locationX>959</locationX>
+        <locationY>531</locationY>
+        <connector>
+            <targetReference>Contact_Role_Creation_Loop</targetReference>
+        </connector>
+        <inputReference>contactRole</inputReference>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_New_Account</name>
+        <label>Create New Account</label>
+        <locationX>620</locationX>
+        <locationY>749</locationY>
+        <assignRecordIdToReference>accountId</assignRecordIdToReference>
         <connector>
             <targetReference>Opportunity_Creation</targetReference>
         </connector>
@@ -112,22 +292,22 @@
     <recordCreates>
         <name>Create_Opportunity</name>
         <label>Create Opportunity</label>
-        <locationX>902</locationX>
-        <locationY>380</locationY>
-        <assignRecordIdToReference>OpportunityId</assignRecordIdToReference>
+        <locationX>943</locationX>
+        <locationY>42</locationY>
+        <assignRecordIdToReference>opportunityId</assignRecordIdToReference>
         <connector>
-            <targetReference>Create</targetReference>
+            <targetReference>Opportunity_Id_Assignment</targetReference>
         </connector>
         <inputAssignments>
             <field>AccountId</field>
             <value>
-                <elementReference>AccountId</elementReference>
+                <elementReference>accountId</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>CloseDate</field>
             <value>
-                <elementReference>Close_Date</elementReference>
+                <elementReference>Closed_Date</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -139,21 +319,31 @@
         <inputAssignments>
             <field>StageName</field>
             <value>
-                <elementReference>Stage_Name</elementReference>
+                <elementReference>Opportunity_Stage</elementReference>
             </value>
         </inputAssignments>
         <object>Opportunity</object>
     </recordCreates>
+    <recordCreates>
+        <name>Create_Products</name>
+        <label>Create Products</label>
+        <locationX>1376</locationX>
+        <locationY>327</locationY>
+        <connector>
+            <targetReference>Opportunity_Id_Assignment</targetReference>
+        </connector>
+        <inputReference>opportunityLineItem</inputReference>
+    </recordCreates>
     <screens>
         <name>Account_Creation</name>
         <label>Account Creation</label>
-        <locationX>428</locationX>
-        <locationY>291</locationY>
-        <allowBack>false</allowBack>
+        <locationX>350</locationX>
+        <locationY>749</locationY>
+        <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>Create_Account</targetReference>
+            <targetReference>Create_New_Account</targetReference>
         </connector>
         <fields>
             <name>Account_Name</name>
@@ -166,19 +356,31 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <name>Create</name>
-        <label>Create</label>
-        <locationX>1031</locationX>
-        <locationY>379</locationY>
-        <allowBack>false</allowBack>
+        <name>Contact_Role_Creation</name>
+        <label>Contact Role Creation</label>
+        <locationX>809</locationX>
+        <locationY>41</locationY>
+        <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Pricebook_Search</targetReference>
+        </connector>
         <fields>
-            <name>Product</name>
-            <extensionName>c:Product_Form</extensionName>
+            <name>RoleForm</name>
+            <extensionName>c:Contact_Role_Form</extensionName>
             <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>AccountId</name>
+                <value>
+                    <elementReference>accountId</elementReference>
+                </value>
+            </inputParameters>
             <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <outputParameters>
+                <assignToReference>contactRoles</assignToReference>
+                <name>Roles</name>
+            </outputParameters>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -186,35 +388,117 @@
     <screens>
         <name>Opportunity_Creation</name>
         <label>Opportunity Creation</label>
-        <locationX>757</locationX>
-        <locationY>380</locationY>
-        <allowBack>false</allowBack>
+        <locationX>618</locationX>
+        <locationY>233</locationY>
+        <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
+        <allowPause>true</allowPause>
         <connector>
-            <targetReference>Create_Opportunity</targetReference>
+            <targetReference>Opportunity_Fields_Assignment</targetReference>
         </connector>
         <fields>
             <name>Opportunity_Name</name>
             <dataType>String</dataType>
             <fieldText>Opportunity Name</fieldText>
             <fieldType>InputField</fieldType>
-            <isRequired>false</isRequired>
+            <isRequired>true</isRequired>
         </fields>
         <fields>
-            <name>Close_Date</name>
-            <dataType>Date</dataType>
-            <fieldText>Close Date</fieldText>
-            <fieldType>InputField</fieldType>
-            <isRequired>false</isRequired>
-        </fields>
-        <fields>
-            <name>Stage_Name</name>
+            <name>Opportunity_Stage</name>
             <choiceReferences>Stages</choiceReferences>
             <dataType>String</dataType>
-            <fieldText>Stage Name</fieldText>
+            <fieldText>Opportunity Stage</fieldText>
             <fieldType>DropdownBox</fieldType>
             <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>Closed_Date</name>
+            <dataType>Date</dataType>
+            <fieldText>Closed Date</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Pricebook_Search</name>
+        <label>Pricebook Search</label>
+        <locationX>810</locationX>
+        <locationY>191</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Product_Creation</targetReference>
+        </connector>
+        <fields>
+            <name>PricebookSearch</name>
+            <extensionName>c:Pricebook_Choose_Form</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <isRequired>true</isRequired>
+            <outputParameters>
+                <assignToReference>selectedEntryId</assignToReference>
+                <name>selectedEntryId</name>
+            </outputParameters>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Product_Creation</name>
+        <label>Product Creation</label>
+        <locationX>944</locationX>
+        <locationY>192</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Create_Opportunity</targetReference>
+        </connector>
+        <fields>
+            <name>Product_Form</name>
+            <extensionName>c:Product_Form</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>PriceBookID</name>
+                <value>
+                    <elementReference>selectedEntryId</elementReference>
+                </value>
+            </inputParameters>
+            <isRequired>true</isRequired>
+            <outputParameters>
+                <assignToReference>Products</assignToReference>
+                <name>Products</name>
+            </outputParameters>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Search_Account</name>
+        <label>Search Account</label>
+        <locationX>170</locationX>
+        <locationY>552</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>IsCreatingNewAccount</targetReference>
+        </connector>
+        <fields>
+            <name>SearchAccountForm</name>
+            <extensionName>c:Account_Search_Form</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <isRequired>true</isRequired>
+            <outputParameters>
+                <assignToReference>selecteadAccount</assignToReference>
+                <name>selectedAccount</name>
+            </outputParameters>
+            <outputParameters>
+                <assignToReference>isNewAccount</assignToReference>
+                <name>isNewAccount</name>
+            </outputParameters>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -228,25 +512,65 @@
     </start>
     <status>Active</status>
     <variables>
-        <name>AccountId</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>true</isOutput>
-    </variables>
-    <variables>
-        <name>OpportunityId</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>true</isOutput>
-    </variables>
-    <variables>
-        <name>PriceBookEntryId</name>
+        <name>accountId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>contactRole</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>OpportunityContactRole</objectType>
+    </variables>
+    <variables>
+        <name>contactRoles</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>OpportunityContactRole</objectType>
+    </variables>
+    <variables>
+        <name>isNewAccount</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>newOpportunity</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Opportunity</objectType>
+    </variables>
+    <variables>
+        <name>opportunityId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>opportunityLineItem</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>OpportunityLineItem</objectType>
+    </variables>
+    <variables>
+        <name>Products</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>OpportunityLineItem</objectType>
     </variables>
     <variables>
         <name>recordId</name>
@@ -256,10 +580,25 @@
         <isOutput>false</isOutput>
     </variables>
     <variables>
+        <name>selecteadAccount</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Account</objectType>
+    </variables>
+    <variables>
+        <name>selectedEntryId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
         <name>sObjectName</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>true</isOutput>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
     </variables>
 </Flow>

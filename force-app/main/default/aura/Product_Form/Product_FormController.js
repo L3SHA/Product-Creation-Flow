@@ -3,6 +3,7 @@
         helper.initColumns(component);
         helper.initProduct(component);
         helper.initListProducts(component);
+        helper.initPriceBookEntries(component);
     },
     
     handleSaveProduct: function(component, event, helper) {

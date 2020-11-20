@@ -1,0 +1,72 @@
+<aura:component implements="lightning:availableForFlowScreens" controller="ContactRoleController" access="global">
+
+    <aura:attribute name="Role" type="OpportunityContactRole" default=""/>
+    <aura:attribute name="RolesView" type="OpportunityContactRole[]"/>
+    <aura:attribute name="Roles" type="OpportunityContactRole[]" default="" access="global"/>
+    <aura:attribute name="AccountId" type="String" access="global"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="isEmpty" type="Boolean" default="True"/>
+    <aura:attribute name="contacts" type="Map[]"/>
+    <aura:attribute name="contactColumns" type="Map[]"/>
+    <aura:attribute name="showError" type="Boolean" default="false"/>
+    <aura:attribute name="message" type="String"/>
+    <aura:attribute name="picklistValues" type="List"/>
+    <aura:attribute name="primaryContactSelectList" type="List" default="[{label: '--None--', value: 'none'}]"/>
+    <aura:attribute name="defaultPLvalue" type="String"/>
+    <aura:attribute name="errorDuplicate" type="Boolean" default="false"/>
+    <aura:attribute name="messageDuplicate" type="String"/>
+
+    <aura:handler  name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <lightning:card title="Contacts" iconName="standard:contact">
+        <lightning:datatable
+                            aura:id="contactsTable"
+                            data="{!v.contacts}"
+                            columns="{!v.contactColumns}"
+                            keyField="Id"
+                            maxRowSelection="1"
+                            onrowselection="{!c.selectContact}"/>
+
+        <aura:if isTrue="{!v.showError}">
+            <div class="slds-align_absolute-center slds-text-color_error">
+                <br/>
+                {!v.message}
+            </div>
+        </aura:if>
+    </lightning:card>
+
+    <lightning:card title="Create Contact Role">
+        <lightning:select aura:id="role" label="Choose Role" required="true"
+                          messageWhenValueMissing="Did you forget to select a role?" name="selectRole"
+                          value="{!v.defaultPLvalue}">
+            <aura:iteration items="{!v.picklistValues}" var="rolePL">
+                <option value="{!rolePL}" text="{!rolePL}"></option>
+            </aura:iteration>    
+        </lightning:select>
+        <lightning:button label="Add Role" variant="brand" 
+                          class="btn-style" onclick="{!c.handleSaveRole}" />
+
+        <aura:if isTrue="{!v.errorDuplicate}">
+            <div class="slds-align_absolute-center slds-text-color_error">
+                <br/>
+                {!v.messageDuplicate}
+            </div>
+        </aura:if>
+    </lightning:card>
+
+    <aura:if isTrue="{!v.isEmpty}">
+        Don't have items to display.
+        <aura:set attribute="else">
+            <lightning:card title="Contact Roles">
+                    <lightning:datatable keyField="id"
+                        data="{!v.RolesView}"
+                        columns="{!v.columns}"
+                        hideCheckboxColumn="true"
+                        onrowaction="{!c.handleRowAction}"/>
+            </lightning:card>
+            <lightning:combobox aura:id="primaryContact" label="Primary Contact (Optional)" 
+                                options="{!v.primaryContactSelectList}" onchange="{!c.changePrimaryContact}"/>
+        </aura:set>
+    </aura:if> 
+
+</aura:component>

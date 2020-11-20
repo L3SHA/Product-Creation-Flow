@@ -1,0 +1,4 @@
+<design:component>
+     <design:attribute name="isNewAccount" label="New Account" />
+     <design:attribute name="selectedAccount" label="Selected Account" />
+</design:component>

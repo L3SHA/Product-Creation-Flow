@@ -1,0 +1,4 @@
+<design:component>
+     <design:attribute name="Roles" label="Roles"/>
+     <design:attribute name="AccountId" label="Account Id"/>
+</design:component>

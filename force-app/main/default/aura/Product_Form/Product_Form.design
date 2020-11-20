@@ -1,3 +1,4 @@
 <design:component>
      <design:attribute name="Products" label="Products"/>
+     <design:attribute name="PriceBookID" label="PriceBook ID"/>
 </design:component>
